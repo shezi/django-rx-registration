@@ -1,0 +1,6 @@
+{% extends "locator/base.djhtml" %}
+
+{% block content %}
+<h1>Sie haben sich von der Seite abgemeldet.</h1>
+
+{% endblock content %}

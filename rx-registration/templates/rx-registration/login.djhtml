@@ -1,0 +1,17 @@
+{% extends "locator/base.djhtml" %}
+
+{% block content %}
+<section>
+    <div class="row">
+        <div class="large-6 medium-12 large-offset-3 columns">
+            <h2>Jetzt anmelden</h2>
+            <form method="POST" action=".">{% csrf_token %}
+                {{ form.as_p }}
+                <input class="button radius" type="submit" value="Anmelden">
+            </form>
+
+            Noch kein Konto? Dann jetzt <a href="{% url 'account:register' %}">registrieren</a> und 30 Tage kostenlos testen.
+        </div>
+    </div>
+</section>
+{% endblock content %}

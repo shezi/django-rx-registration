@@ -1,0 +1,8 @@
+
+
+* TODO tests
+* TODO i18n
+* TODO user account model
+* TODO password reset
+* TODO email FROM setting
+* TODO settings in general
