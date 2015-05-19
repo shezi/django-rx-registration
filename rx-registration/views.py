@@ -21,37 +21,21 @@ def register(request):
     data = {}
 
     initial = {}
-    initial['plan'] = request.GET.get('plan')
     data['form'] = RegistrationForm(initial=initial)
     
     if request.method == 'POST':
         data['form'] = form = RegistrationForm(request.POST)
         if form.is_valid():
 
-            if is_lazy_user(request.user):
-                user = request.user
-                LazyUser.objects.filter(user=user).delete()
-                user.username=form.cleaned_data['username']
-                user.email=form.cleaned_data['email']
-            else:
-                user = get_user_model()(
-                    username=form.cleaned_data['username'],
-                    email=form.cleaned_data['email'],
-                )
+            user = get_user_model()(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+            )
             user.set_password(form.cleaned_data['password1'])
             user.save()
 
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, user)
-
-            ud = user.userdata
-
-            ud.save()
-            
-
-            # Also ensure that stripe will start with the same setup-data as we are.
-            from locator.stripe_utils import ensure_stripe_id
-            ensure_stripe_id(user)
 
             subject_template = get_template('rx-registration/register_subject.djtxt')
             text_template = get_template('rx-registration/register_text.djtxt')
@@ -62,14 +46,14 @@ def register(request):
 
             subject = subject_template.render(ctx)
             text = text_template.render(ctx)
-            FROM = ''
+            FROM = '' # TODO: use a setting here
 
             send_mail(
                 subject, text,
                 FROM,
                 [user.email], fail_silently=False)
             
-            return redirect('locator:locations')
+            return redirect('TODO') # TODO: use a setting here!
 
     return render(request, 'rx-registration/register.djhtml', data)
 
@@ -84,13 +68,13 @@ def v_login(request):
         data['form'] = form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            return redirect('locator:locations')
+            return redirect('TODO')   # TODO: use a setting here!
 
     return render(request, 'rx-registration/login.djhtml', data)
 
 
 def v_logout(request):
-    messages.info(request, 'Sie haben sich von der Seite abgemeldet.')
+    messages.info(request, _('You have been logged out.'))
     logout(request)
 
-    return redirect('locator:main')
+    return redirect('TODO')  # TODO: use a setting here
