@@ -1,6 +1,7 @@
-{% extends "locator/base.djhtml" %}
+{% extends "rx-registration/base.djhtml" %}
+{% load i18n %}
 
 {% block content %}
-<h1>Sie haben sich von der Seite abgemeldet.</h1>
+<h1>{% trans "You have been logged out." %}</h1>
 
 {% endblock content %}

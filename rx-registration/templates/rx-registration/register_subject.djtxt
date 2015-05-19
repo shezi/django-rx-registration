@@ -1,1 +1,1 @@
-Willkommen bei MapYourStores.com
+{% load i18n %}{% trans "Welcome to the site!" %}

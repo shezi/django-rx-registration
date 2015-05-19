@@ -1,33 +1,10 @@
-Hallo und herzlich Willkommen bei MapYourStores.com!
+{% load i18n %}{% blocktrans %}Hello and welcome to this site!
 
-Wir freuen uns sehr, Sie als Kunden bei MapYourStores.com begrüßen zu dürfen und
-gratulieren Ihnen zu dieser exzellenten Wahl!
+We are very happy to have you on board!
 
-Wie Sie wissen, können Sie mit MapYourStores.com in wenigen Minuten alle Ihre
-Filialen und Partner auf einer schicken Google Maps-Karte auf Ihrer Webseite
-einbinden. Melden Sie sich dazu einfach mit Ihrem Benutzernamen und Ihrem Passwort
-auf der Seite an, tragen Sie die Orte in der Liste ein und kopieren Sie den
-notwendigen Code in Ihre Webseite -- den Rest erledigen wir.
+As a little reminder:
+  your username is: {{ user.username }}
 
-Zur Erinnerung:
-  Ihr Benutzername: {{ user.username }}
-  Ihr Paket: {{ plan_display }}
-
-Gerne würden wir hören, wie Ihnen MapYourStores.com gefällt und ob Alles zu Ihrer
-Zufriedenheit ist. Antworten Sie einfach auf diese Email! Wir beantworten alle
-Emails, die wir bekommen und freuen uns schon auf Ihre.
-
-Mit besten Grüßen,
-Mathias Poths von MapYourStores.com
-
-
---
-Mathias Poths
-mathias@mapyourstores.com
-
-Spielmann Solutions GmbH
-Am Köhnen 85
-40599 Düsseldorf
-0211 - 13 95 92 17
-Registergericht: Amtsgericht Düsseldorf, HRB 70749
-Geschäftsführer: Johannes Spielmann
+Have fun on our site!
+the team
+{% endblocktrans %}

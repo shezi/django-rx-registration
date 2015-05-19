@@ -1,17 +1,15 @@
-{% extends "locator/base.djhtml" %}
+{% extends "rx-registration/base.djhtml" %}
+{% load i18n %}
 
 {% block content %}
-<section>
-    <div class="row">
-        <div class="large-6 medium-12 large-offset-3 columns">
-            <h2>Jetzt anmelden</h2>
-            <form method="POST" action=".">{% csrf_token %}
-                {{ form.as_p }}
-                <input class="button radius" type="submit" value="Anmelden">
-            </form>
+    <h2>{% trans "Log in now" %}</h2>
+    <form method="POST" action=".">{% csrf_token %}
+        {{ form.as_p }}
+        <input class="button radius" type="submit" value="{% trans 'Log in' %}"/>
+    </form>
 
-            Noch kein Konto? Dann jetzt <a href="{% url 'account:register' %}">registrieren</a> und 30 Tage kostenlos testen.
-        </div>
-    </div>
-</section>
+    {% url 'rx-registration:register' as register_url %}
+    {% blocktrans %}
+    Not yet registered? Then <a href="{{ register_url }}">register now</a>!
+    {% blocktrans %}
 {% endblock content %}

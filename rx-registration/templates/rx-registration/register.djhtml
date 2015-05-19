@@ -1,44 +1,14 @@
-{% extends "locator/base.djhtml" %}
+{% extends "rx-registration/base.djhtml" %}
+{% load i18n %}
 
 {% block content %}
-<section>
-    <div class="row">
-        <div class="large-6 medium-12 large-offset-3 columns">
-<h2>Jetzt registrieren!</h2>
+<h2>{% trans "Register now" %}!</h2>
 
 <form method="POST" action=".">{% csrf_token %}
-  
-  {% for field in form %}
+  {{ form.as_p }}
 
-    <div id="mys_field_{{ field.name }}"><label {% if field.errors %}class="error"{% endif %}>
-    {% if field.field.left %}
-      <table>
-        <tr>
-          <td width="15px" style="vertical-align: bottom;">{{ field }}</td>
-          <td>{{ field.label }}{% if field.help_text %} <p class="secondary label right">{{field.help_text }}</p>{% endif %}</td>
-        </tr>
-      </table>
-    {% else %}
-        {{ field.label }}{% if field.help_text %} <p class="secondary label right">{{field.help_text }}</p>{% endif %}{{ field }}
-  {% endif %}
-</label>{% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}</div>
-        
-        {% comment %}
-  <div class="large-12 columns">
-    <label {% if field.errors %}class="error"{% endif %}>{{ field.label }}
-      {{ field }}
-    </label>
-    {% for error in field.errors %}
-      <small class="error">{{ error }}</small>      
-    {% endfor %}
-  </div>
-  {% endcomment %}
-  {% endfor %}
-  
-  <input class="button radius" type="submit" value="Benutzer registrieren" track-name="register-user">
+  <input type="submit" value="{% trans "Register now" %}" />
 </form>
-</div>
-</div>
 
 
 {% endblock content %}
