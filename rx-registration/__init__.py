@@ -1,9 +1,13 @@
+"""
+A user registration app that makes it easy for you!
+"""
 
-from django.conf import settings
-
-import stripe
+from django.apps import AppConfig
 
 
-def get_stripe():
-    stripe.api_key = settings.STRIPE_API_SECRET_KEY
-    return stripe
+class RxRegAppConfig(AppConfig):
+    name = 'rx-registration'
+    verbose_name = "Rx-Registration"
+
+
+default_app_config = 'rx-registration.RxRegAppConfig'
