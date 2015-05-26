@@ -10,5 +10,10 @@
   <input type="submit" value="{% trans "Register now" %}" />
 </form>
 
+{% url 'rx_registration:login' as login_url %}
+{% blocktrans %}
+Already have an account? Then <a href="{{ login_url }}">log in now</a>!
+{% endblocktrans %}
+
 
 {% endblock content %}
