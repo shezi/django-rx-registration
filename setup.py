@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 # based off django's own setup.py
 
-version = __import__('rx-registration').__version__
+version = __import__('rx_registration').__version__
 
 setup(
     name='django-rx-registration',

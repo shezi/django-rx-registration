@@ -15,7 +15,7 @@ urlpatterns = patterns(
         name='password'),
 
     url(r'^password/reset/$', 'django.contrib.auth.views.password_reset',
-        {'post_reset_redirect': 'password_reset_done'}, # TODO: namespace?!
+        {'post_reset_redirect': 'rx-registration:password_reset_done'},
         name="password_reset"
         ),
     url(r'^password/reset/sent/$',
@@ -24,7 +24,7 @@ urlpatterns = patterns(
         ),
     url(r'^password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
         'django.contrib.auth.views.password_reset_confirm',
-        {'post_reset_redirect': 'password_reset_complete'}, # TODO: namespace?
+        {'post_reset_redirect': 'rx-registration:password_reset_complete'},
         name='password_reset_confirm',
         ),
     url(r'^password/reset/done/$',
