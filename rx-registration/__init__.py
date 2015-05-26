@@ -2,6 +2,9 @@
 A user registration app that makes it easy for you!
 """
 
+__version__ = '0.1.0'
+
+
 from django.apps import AppConfig
 
 
