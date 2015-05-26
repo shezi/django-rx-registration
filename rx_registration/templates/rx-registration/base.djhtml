@@ -1,0 +1,20 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Rx-Registration</title>
+
+</head>
+
+<body>
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>
+
+
+
