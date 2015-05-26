@@ -8,8 +8,8 @@
         <input class="button radius" type="submit" value="{% trans 'Log in' %}"/>
     </form>
 
-    {% url 'rx-registration:register' as register_url %}
+    {% url 'rx_registration:register' as register_url %}
     {% blocktrans %}
     Not yet registered? Then <a href="{{ register_url }}">register now</a>!
-    {% blocktrans %}
+    {% endblocktrans %}
 {% endblock content %}

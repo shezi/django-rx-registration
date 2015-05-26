@@ -9,15 +9,12 @@ from django.shortcuts import render, redirect
 from django.template import Context
 from django.template.loader import get_template
 
-from . import get_stripe
 from .forms import RegistrationForm, LoginForm
-from locator.models import Location
-from lazysignup.models import LazyUser
-from lazysignup.utils import is_lazy_user
+from .utils import rxsettings
 
 @transaction.atomic
 def register(request):
-
+    """Register a new user."""
     data = {}
 
     initial = {}
@@ -37,23 +34,28 @@ def register(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             login(request, user)
 
-            subject_template = get_template('rx-registration/register_subject.djtxt')
-            text_template = get_template('rx-registration/register_text.djtxt')
+            if rxsettings.confirm_registration:
+                subject_template = get_template('rx-registration/register_subject.djtxt')
+                text_template = get_template('rx-registration/register_text.djtxt')
 
-            ctx = Context({
-                'user': user,
-            })
+                ctx = Context({
+                    'user': user,
+                })
 
-            subject = subject_template.render(ctx)
-            text = text_template.render(ctx)
-            FROM = '' # TODO: use a setting here
+                subject = subject_template.render(ctx)
+                text = text_template.render(ctx)
+                email_from = rxsettings.confirm_registration_from
 
-            send_mail(
-                subject, text,
-                FROM,
-                [user.email], fail_silently=False)
+                try:
+                    send_mail(
+                        subject, text,
+                        email_from,
+                        [user.email], fail_silently=False)
+                except IOError:
+                    # TODO: signal this to the user, probably?
+                    pass
             
-            return redirect('TODO') # TODO: use a setting here!
+            return redirect(rxsettings.redirect_after_register)
 
     return render(request, 'rx-registration/register.djhtml', data)
 
@@ -68,7 +70,7 @@ def v_login(request):
         data['form'] = form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            return redirect('TODO')   # TODO: use a setting here!
+            return redirect(rxsettings.redirect_after_login)
 
     return render(request, 'rx-registration/login.djhtml', data)
 
@@ -77,4 +79,4 @@ def v_logout(request):
     messages.info(request, _('You have been logged out.'))
     logout(request)
 
-    return redirect('TODO')  # TODO: use a setting here
+    return redirect(rxsettings.redirect_after_logout)
