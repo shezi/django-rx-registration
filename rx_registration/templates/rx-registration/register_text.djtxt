@@ -1,8 +1,12 @@
-{% load i18n %}{% blocktrans %}Hello and welcome to this site!
+{% load i18n %}{% url 'rx_registration:register-confirm' token.token_id password as the_url %}{% blocktrans %}Hello and welcome to this site!
 
 We are very happy to have you on board!
 
-As a little reminder:
+Before we can use this email address further, please click the following link
+to confirm the address:
+  {{ the_url }}
+
+And remember:
   your username is: {{ user.username }}
 
 Have fun on our site!

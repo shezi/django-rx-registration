@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 
 from . import views
 
+
 urlpatterns = patterns(
     '',
 
@@ -9,6 +10,12 @@ urlpatterns = patterns(
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', views.v_login, name='login'),
     url(r'^logout/$', views.v_logout, name='logout'),
+
+    url(
+        r'^register/confirm/(?P<token_id>[a-zA-Z0-9 -]{8,128})/(?P<token_password>[a-zA-Z0-9 -]{8,128})/',
+        views.register_confirm,
+        name='register-confirm'
+    ),
 
     url(r'^password/$', 'django.contrib.auth.views.password_change',
         {'post_change_redirect': ''}, # TODO: use a setting here?

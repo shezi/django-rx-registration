@@ -14,6 +14,7 @@ class AttrDict(dict):
 
 # these are all settings and their default values and documentation for rx-registration
 rx_settings_complete = {
+    'token_length': (12, 'The length of the confirmation tokens.'),
     'confirm_registration': (True, 'Do you want to send newly-registered users an email for confirmation?'),
     'confirm_registration_from': ('', 'The email name/address that gets put into the FROM name for sending emails.'),
     'redirect_after_register': ('/', 'Where should we redirect the user to after registering? (URL oder urlconf name)'),

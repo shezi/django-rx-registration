@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template import Context
@@ -11,6 +12,7 @@ from django.template.loader import get_template
 
 from .forms import RegistrationForm, LoginForm
 from .utils import rxsettings
+from .models import SignupConfirmationToken
 
 @transaction.atomic
 def register(request):
@@ -35,11 +37,17 @@ def register(request):
             login(request, user)
 
             if rxsettings.confirm_registration:
+                password, token = SignupConfirmationToken.make_token(user, user.email)
+                user.email = 'none@example.com'  # if you MUST have one...
+                user.save()
+
                 subject_template = get_template('rx-registration/register_subject.djtxt')
                 text_template = get_template('rx-registration/register_text.djtxt')
 
                 ctx = Context({
                     'user': user,
+                    'token': token,
+                    'password': password,
                 })
 
                 subject = subject_template.render(ctx)
@@ -59,6 +67,16 @@ def register(request):
 
     return render(request, 'rx-registration/register.djhtml', data)
 
+
+def register_confirm(request, token_id, token_password):
+    """Confirm a registration token and set a user's email address to confirmed."""
+
+    token = SignupConfirmationToken.use_token(token_id, token_password)
+    if token:
+        # TODO: authenticate user
+        return redirect(rxsettings.redirect_after_login)
+
+    return render(request, 'rx-registration/signup_confirm_failed.djhtml')
 
 def v_login(request):
     data = {}

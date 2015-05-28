@@ -11,6 +11,8 @@ class TokenAdmin(admin.ModelAdmin):
 
     list_filter = ('user', 'expires', 'used', )
 
+    readonly_fields = ('token_id', 'token_hash', 'used')
+
     def get_expired(self, instance):
         return instance.expires < timezone.now()
     get_expired.boolean = True
@@ -19,4 +21,4 @@ class TokenAdmin(admin.ModelAdmin):
 
 admin.site.register(SignupConfirmationToken, TokenAdmin)
 
-admin.site.register(PasswordResetToken, TokenAdmin)
+admin.site.register(PasswordResetToken)
