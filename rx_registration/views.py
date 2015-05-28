@@ -3,8 +3,7 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.core.mail import send_mail, mail_admins
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template import Context
@@ -13,6 +12,9 @@ from django.template.loader import get_template
 from .forms import RegistrationForm, LoginForm
 from .utils import rxsettings
 from .models import SignupConfirmationToken
+
+import logging
+
 
 @transaction.atomic
 def register(request):
@@ -60,9 +62,21 @@ def register(request):
                         email_from,
                         [user.email], fail_silently=False)
                 except IOError:
-                    # TODO: signal this to the user, probably?
-                    pass
-            
+                    messages.warning(request, get_template('rx-registration/signup_confirmation_mail_failed.djtxt').render(request=request))
+
+                    error_data = {
+                        'subject': subject, 'text': text, 'user': user,
+                        'email': user.email,
+                    }
+
+                    mail_admins(
+                        subject='Signup email could not be sent',
+                        message='Signup confirmation message could not be sent\nError data is: {}'.format(error_data),
+                        fail_silently=True,
+                    )
+
+                    logging.error('Signup email could not be sent: {}'.format(error_data))
+
             return redirect(rxsettings.redirect_after_register)
 
     return render(request, 'rx-registration/register.djhtml', data)
@@ -73,10 +87,15 @@ def register_confirm(request, token_id, token_password):
 
     token = SignupConfirmationToken.use_token(token_id, token_password)
     if token:
-        # TODO: authenticate user
+        token.user.backend = 'rx-registration'
+        login(request, token.user)
+
+        messages.info(request, get_template('rx-registration/registration_confirmed.djtxt').render(request=request))
+
         return redirect(rxsettings.redirect_after_login)
 
     return render(request, 'rx-registration/signup_confirm_failed.djhtml')
+
 
 def v_login(request):
     data = {}

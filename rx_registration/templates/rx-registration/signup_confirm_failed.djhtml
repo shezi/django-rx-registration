@@ -1,0 +1,13 @@
+{% extends "rx-registration/base.djhtml" %}
+{% load i18n %}
+
+{% block content %}
+    <h2>{% trans "Confirmation failed" %}</h2>
+
+    {% url 'rx_registration:register' as register_url %}
+    {% blocktrans %}
+      We'e very sorry, but this confirmation link didn't work. It will only work once for you, so maybe you clicked
+      again?<br/>
+      If you don't have an account yet, then <a href="{{ register_url }}">register now</a>!
+    {% endblocktrans %}
+{% endblock content %}
