@@ -37,7 +37,7 @@ def register(request):
             login(request, user)
 
             if rxsettings.confirm_registration:
-                password, token = SignupConfirmationToken.make_token(user, user.email)
+                password, token = SignupConfirmationToken.make_token(user=user, email=user.email)
                 user.email = 'none@example.com'  # if you MUST have one...
                 user.save()
 

@@ -22,21 +22,10 @@ def create_token_password(length=rxsettings.token_length):
     )
 
 
-class SignupConfirmationToken(models.Model):
+class ConfirmationToken(models.Model):
     """
     A confirmation token for newly-registered users.
     """
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_('User'),
-        help_text=_(''),
-    )
-
-    email = models.EmailField(
-        verbose_name=_('Email'),
-        help_text=_('The email address that is being verified with this token.'),
-    )
 
     token_id = models.CharField(
         max_length=128,
@@ -48,6 +37,11 @@ class SignupConfirmationToken(models.Model):
         max_length=128,
         verbose_name=_('Token hash'),
         help_text=_('A password hash of the actual token (for security).'),
+    )
+
+    created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created'),
     )
 
     expires = models.DateTimeField(
@@ -62,7 +56,7 @@ class SignupConfirmationToken(models.Model):
     )
 
     @classmethod
-    def make_token(cls, user, email, expires_in=86400):
+    def make_token(cls, expires_in=86400, **kwargs):
         """
         Make a token for a given user/email combination and return the token password and the saved token itself.
 
@@ -72,15 +66,17 @@ class SignupConfirmationToken(models.Model):
 
         Tokens will get created with the `create_token_password` method in this module.
         The `expires_in` parameters determines in how many seconds this token will expire and won't be useable any more.
+
+        Any additional kwargs passed to this method will be passed on to the `.create` method for the model.
         """
         password = create_token_password()
         password_hash = make_password(password)
 
         token = cls.objects.create(
             token_id=create_token_password(),
-            user=user, email=email,
             token_hash=password_hash,
-            expires=timezone.now() + timedelta(seconds=expires_in)
+            expires=timezone.now() + timedelta(seconds=expires_in),
+            **kwargs
         )
 
         return password, token
@@ -95,18 +91,34 @@ class SignupConfirmationToken(models.Model):
         token_id = token_id.replace(' ', '').replace('-', '')
         token_password = token_password.replace(' ', '').replace('-', '')
 
-        print(token_id, token_password)
-
         try:
             token = cls.objects.get(token_id=token_id, expires__gte=timezone.now())
         except cls.DoesNotExist:
-            print("DID NOT FIND THE TOKEN!")
             return None
 
         if check_password(token_password, token.token_hash):
             return token
 
         return None
+
+    class Meta:
+        abstract = True
+        verbose_name = _('Generic Confirmation token')
+        verbose_name_plural = _('Generic confirmation tokens')
+
+
+class SignupConfirmationToken(ConfirmationToken):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('User'),
+        help_text=_(''),
+    )
+
+    email = models.EmailField(
+        verbose_name=_('Email'),
+        help_text=_('The email address that is being verified with this token.'),
+    )
 
     @classmethod
     def use_token(cls, token_id, token_password):
@@ -123,41 +135,4 @@ class SignupConfirmationToken(models.Model):
     class Meta:
         verbose_name = _('Signup confirmation token')
         verbose_name_plural = _('Signup confirmation tokens')
-
-
-class PasswordResetToken(models.Model):
-    """
-    A token for resetting a password.
-
-    Since these tokens are just as good as passwords, the same safety standards apply and the same care should be taken
-    when handling them.
-    """
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        verbose_name=_('User'),
-        help_text=_(''),
-    )
-
-    token_hash = models.CharField(
-        editable=False,
-        max_length=32,
-        verbose_name=_('Token hash'),
-        help_text=_('A password hash of the actual token (for security).'),
-    )
-
-    expires = models.DateTimeField(
-        verbose_name=_('Expires'),
-        help_text=_(''),
-    )
-
-    used = models.DateTimeField(
-        blank=True, null=True, editable=False,
-        verbose_name=_('Used'),
-        help_text=_(''),
-    )
-
-    class Meta:
-        verbose_name = _('Password reset token')
-        verbose_name_plural = _('Password reset tokens')
 
